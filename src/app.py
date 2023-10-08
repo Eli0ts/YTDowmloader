@@ -9,34 +9,51 @@ customtkinter.set_default_color_theme(
 
 
 class App(customtkinter.CTk):
-    app_title = "Results Analyser"
-    nav_buttons = ["Home", "Analysis", "Data"]
 
     def __init__(self):
         super().__init__()
 
         # configure window
         self.title("Eli0ts YT 'Dowmloader'")
-        self.geometry(f"{720}x{580}")
+        self.geometry(f"{620}x{380}")
 
         # create main entry and button
         self.url = tkinter.StringVar()
         self.entry = customtkinter.CTkEntry(self, placeholder_text="CTkEntry",textvariable=self.url)
-        self.entry.pack(padx=20, pady=20, fill="x")
+        self.entry.pack(padx=20, pady=(60,20), fill="x")
 
         self.download_button = customtkinter.CTkButton(
             master=self,
             fg_color="transparent",
             border_width=2,
             text_color=("gray10", "#DCE4EE"),
-            text="Download"
+            text="Download",
+            command=self.download_video,
         )
         self.download_button.pack()
+        
+        self.statusBar = customtkinter.CTkLabel(self, text="Enter a valid YouTube url and click the download button",font=customtkinter.CTkFont(size=20, weight="bold"),)
+        self.statusBar.pack( pady=40)
+        
+        
+        
+    def download_video(self):
+        try:
+            self.statusBar.configure(text="Attempting to download...")
+            url = self.url.get()
+            youtube_object = YouTube(url)
+            self.statusBar.configure(text=f"Downloading {youtube_object.title}")
+            video = youtube_object.streams.get_highest_resolution()
+            video.download('./downloads/')
+            self.statusBar.configure(text="Download complete!")
+        except Exception as e:
+            self.statusBar.configure(text=e.message, fg_color="red")
+            
+        
         
         
    
 
-        # set default values
 
      
 
